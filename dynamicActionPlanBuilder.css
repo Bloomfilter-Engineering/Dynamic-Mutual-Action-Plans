@@ -1,0 +1,212 @@
+/* dynamicActionPlanBuilder.css */
+
+/* Progress Bar Styling */
+.slds-progress__item.slds-is-completed .slds-progress__marker {
+    background-color: #04844b;
+    border-color: #04844b;
+}
+
+.slds-progress__item.slds-is-active .slds-progress__marker {
+    background-color: #0176d3;
+    border-color: #0176d3;
+    box-shadow: 0 0 3px #0176d3;
+}
+
+.slds-progress-bar__value {
+    background-color: #0176d3;
+    transition: width 0.3s ease;
+}
+
+/* Card Styling */
+.slds-card {
+    margin: 0;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16);
+}
+
+.slds-card__header {
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #dddbda;
+}
+
+/* Task Box Styling */
+.slds-box {
+    background-color: #fafaf9;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.slds-box:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.slds-form-element__label abbr.slds-required {
+    color: #ea001e;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.slds-input:focus,
+.slds-textarea:focus,
+.slds-select:focus {
+    border-color: #0176d3;
+    box-shadow: 0 0 3px #0176d3;
+}
+
+/* Button Styling */
+.slds-button {
+    transition: all 0.2s ease;
+}
+
+.slds-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slds-button_brand {
+    background-color: #0176d3;
+    border-color: #0176d3;
+}
+
+.slds-button_brand:hover:not(:disabled) {
+    background-color: #014486;
+    border-color: #014486;
+}
+
+.slds-button_success {
+    background-color: #04844b;
+    border-color: #04844b;
+    color: white;
+}
+
+.slds-button_success:hover:not(:disabled) {
+    background-color: #036633;
+    border-color: #036633;
+}
+
+/* Task Template Cards */
+.slds-card_boundary {
+    border: 1px solid #dddbda;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.slds-card_boundary:hover {
+    border-color: #0176d3;
+    box-shadow: 0 2px 4px rgba(1, 118, 211, 0.2);
+}
+
+/* Success Icon */
+.slds-icon-text-success {
+    fill: #04844b;
+}
+
+/* Badge Styling */
+.slds-badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.4rem;
+    border-radius: 0.25rem;
+    background-color: #ecebea;
+    color: #3e3e3c;
+}
+
+/* Pagination */
+.slds-button-group {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Loading State */
+.slds-spinner_container {
+    position: relative;
+    min-height: 200px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slds-grid_align-spread {
+        flex-direction: column;
+    }
+    
+    .slds-card__footer .slds-button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .slds-list_horizontal dt,
+    .slds-list_horizontal dd {
+        display: block;
+        width: 100%;
+    }
+}
+
+/* Animation for Step Transitions */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slds-card__body {
+    animation: slideIn 0.3s ease;
+}
+
+/* Custom Scrollbar for Task List */
+.task-list-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.task-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.task-list-container::-webkit-scrollbar-track {
+    background: #f3f3f3;
+}
+
+.task-list-container::-webkit-scrollbar-thumb {
+    background: #dddbda;
+    border-radius: 4px;
+}
+
+.task-list-container::-webkit-scrollbar-thumb:hover {
+    background: #706e6b;
+}
+
+/* Notification Styling */
+.slds-notify {
+    border-radius: 0.25rem;
+    margin: 1rem 0;
+}
+
+.slds-theme_info {
+    background-color: #d8edff;
+    border: 1px solid #0176d3;
+}
+
+.slds-theme_error {
+    background-color: #feded8;
+    border: 1px solid #ea001e;
+}
+
+/* Print Styles */
+@media print {
+    .slds-button,
+    .slds-button-group,
+    .slds-card__footer {
+        display: none;
+    }
+    
+    .slds-box {
+        page-break-inside: avoid;
+    }
+}

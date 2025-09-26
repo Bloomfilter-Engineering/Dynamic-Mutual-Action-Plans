@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Custom Objects -->
+    <types>
+        <members>Custom_Action_Plan__c</members>
+        <members>Custom_Task__c</members>
+        <members>Task_Template__c</members>
+        <members>Action_Plan_Submission_Log__c</members>
+        <members>Action_Plan_Event__e</members>
+        <name>CustomObject</name>
+    </types>
+    
+    <!-- Custom Fields -->
+    <types>
+        <members>Custom_Action_Plan__c.Status__c</members>
+        <members>Custom_Action_Plan__c.External_Reference_Id__c</members>
+        <members>Custom_Action_Plan__c.Native_Action_Plan_Id__c</members>
+        <members>Custom_Action_Plan__c.Related_Record_Id__c</members>
+        <members>Custom_Action_Plan__c.Related_Object_Type__c</members>
+        <members>Custom_Action_Plan__c.Submitted_By_Email__c</members>
+        <members>Custom_Action_Plan__c.Submitted_By_Name__c</members>
+        <members>Custom_Action_Plan__c.Submission_Date__c</members>
+        <members>Custom_Action_Plan__c.Completion_Date__c</members>
+        <members>Custom_Action_Plan__c.Is_Public__c</members>
+        <members>Custom_Action_Plan__c.Error_Message__c</members>
+        <members>Custom_Action_Plan__c.Sync_Status__c</members>
+        <members>Custom_Action_Plan__c.IP_Address__c</members>
+        <members>Custom_Action_Plan__c.User_Agent__c</members>
+        <members>Custom_Action_Plan__c.Session_Id__c</members>
+        
+        <members>Custom_Task__c.Name</members>
+        <members>Custom_Task__c.Description__c</members>
+        <members>Custom_Task__c.Action_Plan__c</members>
+        <members>Custom_Task__c.Due_Date__c</members>
+        <members>Custom_Task__c.Priority__c</members>
+        <members>Custom_Task__c.Status__c</members>
+        <members>Custom_Task__c.Task_Order__c</members>
+        <members>Custom_Task__c.Category__c</members>
+        <members>Custom_Task__c.Assigned_To_Email__c</members>
+        <members>Custom_Task__c.External_Id__c</members>
+        <members>Custom_Task__c.Native_Task_Id__c</members>
+        <members>Custom_Task__c.Days_After_Start__c</members>
+        <members>Custom_Task__c.Is_Required__c</members>
+        <members>Custom_Task__c.Reminder_Days_Before__c</members>
+        
+        <members>Task_Template__c.Name</members>
+        <members>Task_Template__c.Description__c</members>
+        <members>Task_Template__c.Category__c</members>
+        <members>Task_Template__c.Default_Duration_Days__c</members>
+        <members>Task_Template__c.Is_Active__c</members>
+        <members>Task_Template__c.Is_Public__c</members>
+        <members>Task_Template__c.Display_Order__c</members>
+        <members>Task_Template__c.Task_Type__c</members>
+        <members>Task_Template__c.Default_Priority__c</members>
+        <members>Task_Template__c.Instructions__c</members>
+        
+        <members>Action_Plan_Submission_Log__c.Custom_Action_Plan__c</members>
+        <members>Action_Plan_Submission_Log__c.Event_Type__c</members>
+        <members>Action_Plan_Submission_Log__c.Event_Date__c</members>
+        <members>Action_Plan_Submission_Log__c.Details__c</members>
+        <members>Action_Plan_Submission_Log__c.User_Email__c</members>
+        <members>Action_Plan_Submission_Log__c.IP_Address__c</members>
+        
+        <members>Action_Plan_Event__e.Action_Plan_Id__c</members>
+        <members>Action_Plan_Event__e.Reference_Id__c</members>
+        <members>Action_Plan_Event__e.Submitted_By__c</members>
+        <members>Action_Plan_Event__e.Task_Count__c</members>
+        <members>Action_Plan_Event__e.Priority__c</members>
+        <members>Action_Plan_Event__e.Event_Type__c</members>
+        <name>CustomField</name>
+    </types>
+    
+    <!-- Apex Classes -->
+    <types>
+        <members>DynamicActionPlanController</members>
+        <members>ActionPlanIntegrationService</members>
+        <members>ActionPlanEventHandler</members>
+        <members>ActionPlanSyncBatch</members>
+        <members>ActionPlanMonitorController</members>
+        <members>ActionPlanSecurityUtils</members>
+        <members>DynamicActionPlanControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+    
+    <!-- Apex Triggers -->
+    <types>
+        <members>ActionPlanEventTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+    
+    <!-- Lightning Web Components -->
+    <types>
+        <members>dynamicActionPlanBuilder</members>
+        <members>actionPlanMonitor</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    
+    <!-- Permission Sets -->
+    <types>
+        <members>Guest_Action_Plan_Creator</members>
+        <name>PermissionSet</name>
+    </types>
+    
+    <!-- Page Layouts -->
+    <types>
+        <members>Custom_Action_Plan__c-Custom Action Plan Layout</members>
+        <members>Custom_Task__c-Custom Task Layout</members>
+        <members>Task_Template__c-Task Template Layout</members>
+        <members>Action_Plan_Submission_Log__c-Submission Log Layout</members>
+        <name>Layout</name>
+    </types>
+    
+    <!-- Tabs -->
+    <types>
+        <members>Custom_Action_Plan__c</members>
+        <members>Task_Template__c</members>
+        <members>Action_Plan_Submission_Log__c</members>
+        <name>CustomTab</name>
+    </types>
+    
+    <!-- List Views -->
+    <types>
+        <members>Custom_Action_Plan__c.All</members>
+        <members>Custom_Action_Plan__c.Pending_Plans</members>
+        <members>Custom_Action_Plan__c.Synced_Plans</members>
+        <members>Custom_Action_Plan__c.Failed_Plans</members>
+        <members>Task_Template__c.All</members>
+        <members>Task_Template__c.Active_Public_Templates</members>
+        <name>ListView</name>
+    </types>
+    
+    <!-- Record Types (if needed) -->
+    <types>
+        <members>Custom_Action_Plan__c.Guest_Submission</members>
+        <members>Custom_Action_Plan__c.Internal</members>
+        <name>RecordType</name>
+    </types>
+    
+    <!-- Validation Rules -->
+    <types>
+        <members>Custom_Action_Plan__c.Valid_Email_Required</members>
+        <members>Custom_Action_Plan__c.Reference_ID_Format</members>
+        <members>Custom_Task__c.Name_Required</members>
+        <name>ValidationRule</name>
+    </types>
+    
+    <!-- Sharing Rules -->
+    <types>
+        <members>Custom_Action_Plan__c.Guest_User_Read_Access</members>
+        <name>SharingRules</name>
+    </types>
+    
+    <!-- Custom Settings -->
+    <types>
+        <members>Action_Plan_Settings__c</members>
+        <name>CustomSettings</name>
+    </types>
+    
+    <!-- Custom Labels -->
+    <types>
+        <members>*</members>
+        <name>CustomLabel</name>
+    </types>
+    
+    <!-- Remote Site Settings -->
+    <types>
+        <members>Google_reCAPTCHA</members>
+        <members>Google_reCAPTCHA_API</members>
+        <name>RemoteSiteSettings</name>
+    </types>
+    
+    <!-- Experience Cloud Components -->
+    <types>
+        <members>ActionPlanPortal</members>
+        <name>Community</name>
+    </types>
+    
+    <!-- Network/Site Settings -->
+    <types>
+        <members>ActionPlanPortal</members>
+        <name>Network</name>
+    </types>
+    
+    <!-- Version -->
+    <version>61.0</version>
+</Package>

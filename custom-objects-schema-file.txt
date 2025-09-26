@@ -1,0 +1,95 @@
+/**
+ * Custom Objects Schema Definition
+ * Deploy these objects first before any Apex code
+ */
+
+// ============================================
+// CUSTOM OBJECTS METADATA
+// ============================================
+
+/**
+ * Custom_Action_Plan__c
+ * Purpose: Guest-accessible wrapper for Action Plans
+ */
+Object: Custom_Action_Plan__c
+Fields:
+    - Name (Auto-Number: CAP-{00000})
+    - Status__c (Picklist: Pending, Processing, Synced, Failed, Completed)
+    - External_Reference_Id__c (Text(255), Unique, External ID)
+    - Native_Action_Plan_Id__c (Lookup to ActionPlan)
+    - Related_Record_Id__c (Text(18) - Stores Salesforce Record ID)
+    - Related_Object_Type__c (Text(50) - e.g., 'Account', 'Contact', 'Lead')
+    - Submitted_By_Email__c (Email)
+    - Submitted_By_Name__c (Text(255))
+    - Submission_Date__c (DateTime)
+    - Completion_Date__c (DateTime)
+    - Is_Public__c (Checkbox, Default: true)
+    - Error_Message__c (Long Text Area(2000))
+    - Sync_Status__c (Picklist: Not Started, In Progress, Completed, Error)
+    - IP_Address__c (Text(45))
+    - User_Agent__c (Text(255))
+    - Session_Id__c (Text(255))
+
+/**
+ * Custom_Task__c
+ * Purpose: Guest-accessible task collector
+ */
+Object: Custom_Task__c
+Fields:
+    - Name (Text(255))
+    - Description__c (Long Text Area(32768))
+    - Action_Plan__c (Master-Detail to Custom_Action_Plan__c)
+    - Due_Date__c (Date)
+    - Priority__c (Picklist: High, Medium, Low)
+    - Status__c (Picklist: Not Started, In Progress, Completed, Cancelled)
+    - Task_Order__c (Number(4,0))
+    - Category__c (Picklist: Follow-up, Documentation, Review, Approval, Other)
+    - Assigned_To_Email__c (Email)
+    - External_Id__c (Text(255), Unique, External ID)
+    - Native_Task_Id__c (Lookup to Task)
+    - Days_After_Start__c (Number(3,0))
+    - Is_Required__c (Checkbox, Default: true)
+    - Reminder_Days_Before__c (Number(2,0))
+
+/**
+ * Task_Template__c
+ * Purpose: Pre-defined task templates for guest users
+ */
+Object: Task_Template__c
+Fields:
+    - Name (Text(255))
+    - Description__c (Long Text Area(32768))
+    - Category__c (Picklist: Sales, Service, Marketing, Operations, Other)
+    - Default_Duration_Days__c (Number(3,0))
+    - Is_Active__c (Checkbox, Default: true)
+    - Is_Public__c (Checkbox, Default: false)
+    - Display_Order__c (Number(4,0))
+    - Task_Type__c (Picklist: Email, Call, Meeting, Review, Other)
+    - Default_Priority__c (Picklist: High, Medium, Low)
+    - Instructions__c (Rich Text Area(32768))
+
+/**
+ * Action_Plan_Submission_Log__c
+ * Purpose: Audit trail for all submissions
+ */
+Object: Action_Plan_Submission_Log__c
+Fields:
+    - Name (Auto-Number: LOG-{0000000})
+    - Custom_Action_Plan__c (Lookup to Custom_Action_Plan__c)
+    - Event_Type__c (Picklist: Created, Updated, Synced, Failed, Completed)
+    - Event_Date__c (DateTime)
+    - Details__c (Long Text Area(32768))
+    - User_Email__c (Email)
+    - IP_Address__c (Text(45))
+
+/**
+ * PLATFORM EVENT
+ */
+Platform Event: Action_Plan_Event__e
+Fields:
+    - Action_Plan_Id__c (Text(18))
+    - Reference_Id__c (Text(255))
+    - Submitted_By__c (Email)
+    - Task_Count__c (Number(3,0))
+    - Priority__c (Text(20))
+    - Event_Type__c (Text(50))

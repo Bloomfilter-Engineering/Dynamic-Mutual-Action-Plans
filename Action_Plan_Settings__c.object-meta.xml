@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Configuration settings for Action Plan integration</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Enable_Auto_Sync__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Enable automatic synchronization to native Action Plans</description>
+        <externalId>false</externalId>
+        <label>Enable Auto Sync</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Rate_Limit_Per_Hour__c</fullName>
+        <defaultValue>5</defaultValue>
+        <description>Maximum submissions per email per hour</description>
+        <externalId>false</externalId>
+        <label>Rate Limit Per Hour</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Max_Tasks_Per_Plan__c</fullName>
+        <defaultValue>20</defaultValue>
+        <description>Maximum number of tasks allowed per action plan</description>
+        <externalId>false</externalId>
+        <label>Max Tasks Per Plan</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Batch_Size__c</fullName>
+        <defaultValue>50</defaultValue>
+        <description>Batch size for processing action plans</description>
+        <externalId>false</externalId>
+        <label>Batch Size</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enable_Email_Notifications__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Send email notifications for batch completions</description>
+        <externalId>false</externalId>
+        <label>Enable Email Notifications</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Admin_Email__c</fullName>
+        <description>Email address for admin notifications</description>
+        <externalId>false</externalId>
+        <label>Admin Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enable_Debug_Logging__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Enable detailed debug logging</description>
+        <externalId>false</externalId>
+        <label>Enable Debug Logging</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Sync_Retry_Attempts__c</fullName>
+        <defaultValue>3</defaultValue>
+        <description>Number of retry attempts for failed synchronizations</description>
+        <externalId>false</externalId>
+        <label>Sync Retry Attempts</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Lead_Source__c</fullName>
+        <defaultValue>Web</defaultValue>
+        <description>Default lead source for created leads</description>
+        <externalId>false</externalId>
+        <label>Default Lead Source</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Experience_Cloud_URL__c</fullName>
+        <description>Base URL for Experience Cloud site</description>
+        <externalId>false</externalId>
+        <label>Experience Cloud URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Enable_CAPTCHA__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Require CAPTCHA for guest submissions</description>
+        <externalId>false</externalId>
+        <label>Enable CAPTCHA</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CAPTCHA_Site_Key__c</fullName>
+        <description>Google reCAPTCHA site key</description>
+        <externalId>false</externalId>
+        <label>CAPTCHA Site Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CAPTCHA_Secret_Key__c</fullName>
+        <description>Google reCAPTCHA secret key</description>
+        <externalId>false</externalId>
+        <label>CAPTCHA Secret Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Data_Retention_Days__c</fullName>
+        <defaultValue>90</defaultValue>
+        <description>Days to retain submission logs</description>
+        <externalId>false</externalId>
+        <label>Data Retention Days</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Action Plan Settings</label>
+    <visibility>Public</visibility>
+</CustomObject>

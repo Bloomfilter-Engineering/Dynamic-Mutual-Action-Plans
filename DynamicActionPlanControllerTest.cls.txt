@@ -1,0 +1,299 @@
+/**
+ * DynamicActionPlanControllerTest.cls
+ * Test class for DynamicActionPlanController
+ */
+@isTest
+private class DynamicActionPlanControllerTest {
+    
+    @testSetup
+    static void setupTestData() {
+        // Create test task templates
+        List<Task_Template__c> templates = new List<Task_Template__c>();
+        
+        templates.add(new Task_Template__c(
+            Name = 'Test Template 1',
+            Description__c = 'Test Description 1',
+            Category__c = 'Sales',
+            Default_Duration_Days__c = 1,
+            Is_Active__c = true,
+            Is_Public__c = true,
+            Display_Order__c = 10
+        ));
+        
+        templates.add(new Task_Template__c(
+            Name = 'Test Template 2',
+            Description__c = 'Test Description 2',
+            Category__c = 'Support',
+            Default_Duration_Days__c = 2,
+            Is_Active__c = true,
+            Is_Public__c = true,
+            Display_Order__c = 20
+        ));
+        
+        templates.add(new Task_Template__c(
+            Name = 'Inactive Template',
+            Description__c = 'Inactive',
+            Category__c = 'Other',
+            Is_Active__c = false,
+            Is_Public__c = true
+        ));
+        
+        templates.add(new Task_Template__c(
+            Name = 'Private Template',
+            Description__c = 'Private',
+            Category__c = 'Internal',
+            Is_Active__c = true,
+            Is_Public__c = false
+        ));
+        
+        insert templates;
+        
+        // Create custom settings
+        Action_Plan_Settings__c settings = new Action_Plan_Settings__c();
+        settings.Enable_Auto_Sync__c = true;
+        settings.Rate_Limit_Per_Hour__c = 5;
+        settings.Max_Tasks_Per_Plan__c = 20;
+        insert settings;
+    }
+    
+    @isTest
+    static void testGetTaskTemplates_Success() {
+        Test.startTest();
+        List<Task_Template__c> templates = DynamicActionPlanController.getTaskTemplates();
+        Test.stopTest();
+        
+        System.assertEquals(2, templates.size(), 'Should return only active and public templates');
+        System.assertEquals('Test Template 1', templates[0].Name, 'First template should be ordered correctly');
+    }
+    
+    @isTest
+    static void testGetTaskTemplates_Exception() {
+        // Force an exception by corrupting data
+        delete [SELECT Id FROM Task_Template__c];
+        
+        Test.startTest();
+        try {
+            List<Task_Template__c> templates = DynamicActionPlanController.getTaskTemplates();
+            // We should still get an empty list, not an exception
+            System.assertEquals(0, templates.size(), 'Should return empty list when no templates exist');
+        } catch (AuraHandledException e) {
+            // This is expected if there's an issue
+            System.assert(e.getMessage().contains('Error loading templates'), 'Should have proper error message');
+        }
+        Test.stopTest();
+    }
+    
+    @isTest
+    static void testSaveActionPlan_Success() {
+        DynamicActionPlanController.ActionPlanWrapper wrapper = createTestWrapper();
+        String jsonWrapper = JSON.serialize(wrapper);
+        
+        Test.startTest();
+        Map<String, Object> result = DynamicActionPlanController.saveActionPlan(jsonWrapper);
+        Test.stopTest();
+        
+        System.assertEquals(true, result.get('success'), 'Should return success');
+        System.assertNotEquals(null, result.get('actionPlanId'), 'Should return action plan ID');
+        System.assertNotEquals(null, result.get('referenceId'), 'Should return reference ID');
+        
+        // Verify data was created
+        List<Custom_Action_Plan__c> plans = [SELECT Id FROM Custom_Action_Plan__c];
+        System.assertEquals(1, plans.size(), 'Should create one action plan');
+        
+        List<Custom_Task__c> tasks = [SELECT Id FROM Custom_Task__c];
+        System.assertEquals(2, tasks.size(), 'Should create two tasks');
+    }
+    
+    @isTest
+    static void testSaveActionPlan_ValidationErrors() {
+        // Test with empty email
+        DynamicActionPlanController.ActionPlanWrapper wrapper = createTestWrapper();
+        wrapper.submittedByEmail = '';
+        String jsonWrapper = JSON.serialize(wrapper);
+        
+        Test.startTest();
+        try {
+            DynamicActionPlanController.saveActionPlan(jsonWrapper);
+            System.assert(false, 'Should throw exception for empty email');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Email address is required'), 'Should have email validation error');
+        }
+        
+        // Test with invalid email
+        wrapper.submittedByEmail = 'invalid-email';
+        jsonWrapper = JSON.serialize(wrapper);
+        
+        try {
+            DynamicActionPlanController.saveActionPlan(jsonWrapper);
+            System.assert(false, 'Should throw exception for invalid email');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('valid email address'), 'Should have email format error');
+        }
+        
+        // Test with no tasks
+        wrapper.submittedByEmail = 'test@example.com';
+        wrapper.tasks = new List<DynamicActionPlanController.TaskWrapper>();
+        jsonWrapper = JSON.serialize(wrapper);
+        
+        try {
+            DynamicActionPlanController.saveActionPlan(jsonWrapper);
+            System.assert(false, 'Should throw exception for no tasks');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('At least one task is required'), 'Should have task validation error');
+        }
+        Test.stopTest();
+    }
+    
+    @isTest
+    static void testSaveActionPlan_RateLimit() {
+        // Create 5 existing submissions
+        List<Custom_Action_Plan__c> existingPlans = new List<Custom_Action_Plan__c>();
+        for (Integer i = 0; i < 5; i++) {
+            existingPlans.add(new Custom_Action_Plan__c(
+                External_Reference_Id__c = 'EXT-' + i + '-abc123def',
+                Submitted_By_Email__c = 'test@example.com',
+                Submission_Date__c = System.now(),
+                Status__c = 'Pending'
+            ));
+        }
+        insert existingPlans;
+        
+        DynamicActionPlanController.ActionPlanWrapper wrapper = createTestWrapper();
+        String jsonWrapper = JSON.serialize(wrapper);
+        
+        Test.startTest();
+        try {
+            DynamicActionPlanController.saveActionPlan(jsonWrapper);
+            System.assert(false, 'Should throw exception for rate limit');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Rate limit exceeded'), 'Should have rate limit error');
+        }
+        Test.stopTest();
+    }
+    
+    @isTest
+    static void testSaveActionPlan_MaxTasks() {
+        DynamicActionPlanController.ActionPlanWrapper wrapper = createTestWrapper();
+        wrapper.tasks = new List<DynamicActionPlanController.TaskWrapper>();
+        
+        // Add 21 tasks (exceeds limit of 20)
+        for (Integer i = 0; i < 21; i++) {
+            DynamicActionPlanController.TaskWrapper task = new DynamicActionPlanController.TaskWrapper();
+            task.name = 'Task ' + i;
+            task.description = 'Description ' + i;
+            task.priority = 'Normal';
+            wrapper.tasks.add(task);
+        }
+        
+        String jsonWrapper = JSON.serialize(wrapper);
+        
+        Test.startTest();
+        try {
+            DynamicActionPlanController.saveActionPlan(jsonWrapper);
+            System.assert(false, 'Should throw exception for too many tasks');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Maximum'), 'Should have max tasks error');
+        }
+        Test.stopTest();
+    }
+    
+    @isTest
+    static void testGetActionPlanStatus_Success() {
+        // Create test action plan
+        Custom_Action_Plan__c plan = new Custom_Action_Plan__c(
+            External_Reference_Id__c = 'EXT-123-abc123def',
+            Status__c = 'Synced',
+            Sync_Status__c = 'Completed',
+            Submitted_By_Email__c = 'test@example.com',
+            Submission_Date__c = System.now(),
+            Is_Public__c = true
+        );
+        insert plan;
+        
+        // Create test tasks
+        List<Custom_Task__c> tasks = new List<Custom_Task__c>();
+        tasks.add(new Custom_Task__c(
+            Name = 'Task 1',
+            Action_Plan__c = plan.Id,
+            Status__c = 'Completed',
+            Task_Order__c = 10
+        ));
+        tasks.add(new Custom_Task__c(
+            Name = 'Task 2',
+            Action_Plan__c = plan.Id,
+            Status__c = 'In Progress',
+            Task_Order__c = 20
+        ));
+        insert tasks;
+        
+        Test.startTest();
+        Map<String, Object> result = DynamicActionPlanController.getActionPlanStatus('EXT-123-abc123def');
+        Test.stopTest();
+        
+        System.assertEquals('EXT-123-abc123def', result.get('referenceId'), 'Should return correct reference ID');
+        System.assertEquals('Synced', result.get('status'), 'Should return correct status');
+        
+        List<Object> taskList = (List<Object>) result.get('tasks');
+        System.assertEquals(2, taskList.size(), 'Should return 2 tasks');
+    }
+    
+    @isTest
+    static void testGetActionPlanStatus_NotFound() {
+        Test.startTest();
+        try {
+            DynamicActionPlanController.getActionPlanStatus('EXT-999-notexists');
+            System.assert(false, 'Should throw exception for not found');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('not found'), 'Should have not found error');
+        }
+        Test.stopTest();
+    }
+    
+    @isTest
+    static void testGetActionPlanStatus_InvalidReference() {
+        Test.startTest();
+        try {
+            DynamicActionPlanController.getActionPlanStatus('INVALID');
+            System.assert(false, 'Should throw exception for invalid reference');
+        } catch (AuraHandledException e) {
+            System.assert(e.getMessage().contains('Invalid reference ID'), 'Should have invalid reference error');
+        }
+        Test.stopTest();
+    }
+    
+    // Helper methods
+    private static DynamicActionPlanController.ActionPlanWrapper createTestWrapper() {
+        DynamicActionPlanController.ActionPlanWrapper wrapper = new DynamicActionPlanController.ActionPlanWrapper();
+        wrapper.referenceId = 'EXT-001-test12345';
+        wrapper.submittedByEmail = 'test@example.com';
+        wrapper.submittedByName = 'Test User';
+        wrapper.relatedObjectType = 'Lead';
+        wrapper.ipAddress = '192.168.1.1';
+        wrapper.userAgent = 'Mozilla/5.0';
+        wrapper.sessionId = 'session123';
+        
+        wrapper.tasks = new List<DynamicActionPlanController.TaskWrapper>();
+        
+        DynamicActionPlanController.TaskWrapper task1 = new DynamicActionPlanController.TaskWrapper();
+        task1.name = 'Test Task 1';
+        task1.description = 'Test Description 1';
+        task1.dueDate = Date.today().addDays(1);
+        task1.priority = 'High';
+        task1.category = 'Sales';
+        task1.daysAfterStart = 1;
+        task1.isRequired = true;
+        wrapper.tasks.add(task1);
+        
+        DynamicActionPlanController.TaskWrapper task2 = new DynamicActionPlanController.TaskWrapper();
+        task2.name = 'Test Task 2';
+        task2.description = 'Test Description 2';
+        task2.dueDate = Date.today().addDays(2);
+        task2.priority = 'Normal';
+        task2.category = 'Support';
+        task2.daysAfterStart = 2;
+        task2.isRequired = false;
+        wrapper.tasks.add(task2);
+        
+        return wrapper;
+    }
+}

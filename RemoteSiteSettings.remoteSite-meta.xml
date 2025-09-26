@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <remoteSite>
+        <fullName>Google_reCAPTCHA</fullName>
+        <description>Google reCAPTCHA verification endpoint</description>
+        <disableProtocolSecurity>false</disableProtocolSecurity>
+        <isActive>true</isActive>
+        <url>https://www.google.com/recaptcha</url>
+    </remoteSite>
+    <remoteSite>
+        <fullName>Google_reCAPTCHA_API</fullName>
+        <description>Google reCAPTCHA API endpoint</description>
+        <disableProtocolSecurity>false</disableProtocolSecurity>
+        <isActive>true</isActive>
+        <url>https://www.recaptcha.net</url>
+    </remoteSite>
+</RemoteSiteSettings>

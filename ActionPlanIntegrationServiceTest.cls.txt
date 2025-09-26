@@ -1,0 +1,275 @@
+/**
+ * ActionPlanIntegrationServiceTest.cls
+ * Test class for ActionPlanIntegrationService
+ */
+@isTest
+private class ActionPlanIntegrationServiceTest {
+    
+    @testSetup
+    static void setupTestData() {
+        // Create test Lead
+        Lead testLead = new Lead(
+            FirstName = 'Test',
+            LastName = 'Lead',
+            Company = 'Test Company',
+            Email = 'testlead@example.com',
+            Status = 'New'
+        );
+        insert testLead;
+        
+        // Create test Contact
+        Contact testContact = new Contact(
+            FirstName = 'Test',
+            LastName = 'Contact',
+            Email = 'testcontact@example.com'
+        );
+        insert testContact;
+        
+        // Create Action Plan Template
+        ActionPlanTemplate template = new ActionPlanTemplate(
+            Name = 'Guest Template',
+            Description = 'Template for guest submissions',
+            IsActive = true
+        );
+        insert template;
+        
+        // Create Custom Action Plans for testing
+        List<Custom_Action_Plan__c> customPlans = new List<Custom_Action_Plan__c>();
+        
+        // Plan 1: With related Lead
+        customPlans.add(new Custom_Action_Plan__c(
+            External_Reference_Id__c = 'EXT-001-abc123def',
+            Status__c = 'Pending',
+            Sync_Status__c = 'Not Started',
+            Submitted_By_Email__c = 'guest1@example.com',
+            Submitted_By_Name__c = 'Guest User One',
+            Related_Record_Id__c = testLead.Id,
+            Related_Object_Type__c = 'Lead',
+            Submission_Date__c = System.now()
+        ));
+        
+        // Plan 2: With email matching existing Contact
+        customPlans.add(new Custom_Action_Plan__c(
+            External_Reference_Id__c = 'EXT-002-def456ghi',
+            Status__c = 'Pending',
+            Sync_Status__c = 'Not Started',
+            Submitted_By_Email__c = 'testcontact@example.com',
+            Submitted_By_Name__c = 'Test Contact',
+            Submission_Date__c = System.now()
+        ));
+        
+        // Plan 3: New guest user (will create Lead)
+        customPlans.add(new Custom_Action_Plan__c(
+            External_Reference_Id__c = 'EXT-003-ghi789jkl',
+            Status__c = 'Pending',
+            Sync_Status__c = 'Not Started',
+            Submitted_By_Email__c = 'newguest@example.com',
+            Submitted_By_Name__c = 'New Guest User',
+            Submission_Date__c = System.now()
+        ));
+        
+        insert customPlans;
+        
+        // Create Custom Tasks
+        List<Custom_Task__c> customTasks = new List<Custom_Task__c>();
+        
+        for (Custom_Action_Plan__c plan : customPlans) {
+            customTasks.add(new Custom_Task__c(
+                Name = 'Task 1 for ' + plan.External_Reference_Id__c,
+                Description__c = 'Description 1',
+                Action_Plan__c = plan.Id,
+                Due_Date__c = Date.today().addDays(1),
+                Priority__c = 'High',
+                Status__c = 'Not Started',
+                Task_Order__c = 10,
+                Days_After_Start__c = 1,
+                Is_Required__c = true
+            ));
+            
+            customTasks.add(new Custom_Task__c(
+                Name = 'Task 2 for ' + plan.External_Reference_Id__c,
+                Description__c = 'Description 2',
+                Action_Plan__c = plan.Id,
+                Due_Date__c = Date.today().addDays(3),
+                Priority__c = 'Normal',
+                Status__c = 'Not Started',
+                Task_Order__c = 20,
+                Days_After_Start__c = 3,
+                Is_Required__c = false,
+                Assigned_To_Email__c = UserInfo.getUserEmail()
+            ));
+        }
+        
+        insert customTasks;
+    }
+    
+    @isTest
+    static void testSyncToNativeActionPlans_WithRelatedLead() {
+        Custom_Action_Plan__c customPlan = [
+            SELECT Id 
+            FROM Custom_Action_Plan__c 
+            WHERE External_Reference_Id__c = 'EXT-001-abc123def'
+            LIMIT 1
+        ];
+        
+        Test.startTest();
+        ActionPlanIntegrationService.syncToNativeActionPlans(new List<Id>{customPlan.Id});
+        Test.stopTest();
+        
+        // Verify sync completed
+        customPlan = [
+            SELECT Status__c, Sync_Status__c, Native_Action_Plan_Id__c, Error_Message__c
+            FROM Custom_Action_Plan__c 
+            WHERE Id = :customPlan.Id
+        ];
+        
+        System.assertEquals('Synced', customPlan.Status__c, 'Status should be Synced');
+        System.assertEquals('Completed', customPlan.Sync_Status__c, 'Sync status should be Completed');
+        System.assertNotEquals(null, customPlan.Native_Action_Plan_Id__c, 'Should have native action plan ID');
+        System.assertEquals(null, customPlan.Error_Message__c, 'Should not have error message');
+        
+        // Verify native action plan created
+        List<ActionPlan> nativePlans = [SELECT Id, Name FROM ActionPlan];
+        System.assertEquals(1, nativePlans.size(), 'Should create one native action plan');
+        
+        // Verify native tasks created
+        List<ActionPlanTask> nativeTasks = [SELECT Id FROM ActionPlanTask WHERE ActionPlanId = :nativePlans[0].Id];
+        System.assertEquals(2, nativeTasks.size(), 'Should create two native tasks');
+    }
+    
+    @isTest
+    static void testSyncToNativeActionPlans_WithExistingContact() {
+        Custom_Action_Plan__c customPlan = [
+            SELECT Id 
+            FROM Custom_Action_Plan__c 
+            WHERE External_Reference_Id__c = 'EXT-002-def456ghi'
+            LIMIT 1
+        ];
+        
+        Test.startTest();
+        ActionPlanIntegrationService.syncToNativeActionPlans(new List<Id>{customPlan.Id});
+        Test.stopTest();
+        
+        // Verify sync completed
+        customPlan = [
+            SELECT Status__c, Sync_Status__c, Native_Action_Plan_Id__c
+            FROM Custom_Action_Plan__c 
+            WHERE Id = :customPlan.Id
+        ];
+        
+        System.assertEquals('Synced', customPlan.Status__c, 'Status should be Synced');
+        System.assertNotEquals(null, customPlan.Native_Action_Plan_Id__c, 'Should have native action plan ID');
+        
+        // Verify action plan is linked to Contact
+        List<ActionPlan> nativePlans = [SELECT Id, TargetId FROM ActionPlan];
+        Contact targetContact = [SELECT Id FROM Contact WHERE Email = 'testcontact@example.com' LIMIT 1];
+        System.assertEquals(targetContact.Id, nativePlans[0].TargetId, 'Should be linked to existing contact');
+    }
+    
+    @isTest
+    static void testSyncToNativeActionPlans_CreateNewLead() {
+        Custom_Action_Plan__c customPlan = [
+            SELECT Id 
+            FROM Custom_Action_Plan__c 
+            WHERE External_Reference_Id__c = 'EXT-003-ghi789jkl'
+            LIMIT 1
+        ];
+        
+        Test.startTest();
+        ActionPlanIntegrationService.syncToNativeActionPlans(new List<Id>{customPlan.Id});
+        Test.stopTest();
+        
+        // Verify sync completed
+        customPlan = [
+            SELECT Status__c, Sync_Status__c, Native_Action_Plan_Id__c
+            FROM Custom_Action_Plan__c 
+            WHERE Id = :customPlan.Id
+        ];
+        
+        System.assertEquals('Synced', customPlan.Status__c, 'Status should be Synced');
+        System.assertNotEquals(null, customPlan.Native_Action_Plan_Id__c, 'Should have native action plan ID');
+        
+        // Verify new Lead was created
+        List<Lead> newLeads = [SELECT Id, Email, FirstName, LastName FROM Lead WHERE Email = 'newguest@example.com'];
+        System.assertEquals(1, newLeads.size(), 'Should create new lead');
+        System.assertEquals('New', newLeads[0].FirstName, 'Should parse first name');
+        System.assertEquals('Guest User', newLeads[0].LastName, 'Should parse last name');
+    }
+    
+    @isTest
+    static void testSyncToNativeActionPlans_BulkOperation() {
+        List<Custom_Action_Plan__c> customPlans = [
+            SELECT Id 
+            FROM Custom_Action_Plan__c 
+            WHERE Sync_Status__c = 'Not Started'
+        ];
+        
+        List<Id> planIds = new List<Id>();
+        for (Custom_Action_Plan__c plan : customPlans) {
+            planIds.add(plan.Id);
+        }
+        
+        Test.startTest();
+        ActionPlanIntegrationService.syncToNativeActionPlans(planIds);
+        Test.stopTest();
+        
+        // Verify all plans synced
+        List<Custom_Action_Plan__c> syncedPlans = [
+            SELECT Id, Status__c, Sync_Status__c 
+            FROM Custom_Action_Plan__c 
+            WHERE Id IN :planIds
+        ];
+        
+        for (Custom_Action_Plan__c plan : syncedPlans) {
+            System.assertEquals('Synced', plan.Status__c, 'All plans should be synced');
+            System.assertEquals('Completed', plan.Sync_Status__c, 'All plans should have completed sync');
+        }
+        
+        // Verify native action plans created
+        List<ActionPlan> nativePlans = [SELECT Id FROM ActionPlan];
+        System.assertEquals(3, nativePlans.size(), 'Should create three native action plans');
+    }
+    
+    @isTest
+    static void testSyncToNativeActionPlans_HandleError() {
+        // Create a plan with invalid data that will cause an error
+        Custom_Action_Plan__c errorPlan = new Custom_Action_Plan__c(
+            External_Reference_Id__c = 'EXT-ERROR-test123',
+            Status__c = 'Pending',
+            Sync_Status__c = 'Not Started',
+            Submitted_By_Email__c = 'invalid@', // Invalid email
+            Submitted_By_Name__c = '',
+            Submission_Date__c = System.now()
+        );
+        insert errorPlan;
+        
+        Test.startTest();
+        try {
+            ActionPlanIntegrationService.syncToNativeActionPlans(new List<Id>{errorPlan.Id});
+        } catch (Exception e) {
+            // Expected exception
+        }
+        Test.stopTest();
+        
+        // Verify error was handled
+        errorPlan = [
+            SELECT Status__c, Sync_Status__c, Error_Message__c
+            FROM Custom_Action_Plan__c 
+            WHERE Id = :errorPlan.Id
+        ];
+        
+        System.assertEquals('Failed', errorPlan.Status__c, 'Status should be Failed');
+        System.assertEquals('Error', errorPlan.Sync_Status__c, 'Sync status should be Error');
+        System.assertNotEquals(null, errorPlan.Error_Message__c, 'Should have error message');
+    }
+    
+    @isTest
+    static void testSyncToNativeActionPlans_EmptyList() {
+        Test.startTest();
+        ActionPlanIntegrationService.syncToNativeActionPlans(new List<Id>());
+        Test.stopTest();
+        
+        // Should handle gracefully without errors
+        System.assert(true, 'Should handle empty list without errors');
+    }
+}

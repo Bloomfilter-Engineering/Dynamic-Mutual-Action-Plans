@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Action Plan Builder Labels -->
+    <labels>
+        <fullName>Action_Plan_Builder_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Action Plan Builder Title</shortDescription>
+        <value>Create Your Action Plan</value>
+    </labels>
+    <labels>
+        <fullName>Step_1_Your_Information</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Step 1 Title</shortDescription>
+        <value>Your Information</value>
+    </labels>
+    <labels>
+        <fullName>Step_2_Add_Tasks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Step 2 Title</shortDescription>
+        <value>Add Tasks</value>
+    </labels>
+    <labels>
+        <fullName>Step_3_Review</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Step 3 Title</shortDescription>
+        <value>Review</value>
+    </labels>
+    <labels>
+        <fullName>Step_4_Complete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Step 4 Title</shortDescription>
+        <value>Complete</value>
+    </labels>
+    
+    <!-- Field Labels -->
+    <labels>
+        <fullName>Email_Address_Required</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Email Address Required</shortDescription>
+        <value>Email Address (Required)</value>
+    </labels>
+    <labels>
+        <fullName>Full_Name_Required</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Full Name Required</shortDescription>
+        <value>Full Name (Required)</value>
+    </labels>
+    <labels>
+        <fullName>Task_Name_Required</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Task Name Required</shortDescription>
+        <value>Task Name (Required)</value>
+    </labels>
+    
+    <!-- Button Labels -->
+    <labels>
+        <fullName>Add_Custom_Task</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Add Custom Task Button</shortDescription>
+        <value>Add Custom Task</value>
+    </labels>
+    <labels>
+        <fullName>Add_Template</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Add Template Button</shortDescription>
+        <value>Add Template</value>
+    </labels>
+    <labels>
+        <fullName>Next</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Next Button</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>Previous</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Previous Button</shortDescription>
+        <value>Previous</value>
+    </labels>
+    <labels>
+        <fullName>Submit_Action_Plan</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Submit Action Plan Button</shortDescription>
+        <value>Submit Action Plan</value>
+    </labels>
+    <labels>
+        <fullName>Create_Another</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Create Another Button</shortDescription>
+        <value>Create Another Action Plan</value>
+    </labels>
+    
+    <!-- Success Messages -->
+    <labels>
+        <fullName>Success_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Success Title</shortDescription>
+        <value>Action Plan Submitted Successfully!</value>
+    </labels>
+    <labels>
+        <fullName>Success_Message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Success Message</shortDescription>
+        <value>Your action plan has been submitted successfully. Please save your reference number for tracking.</value>
+    </labels>
+    <labels>
+        <fullName>Reference_Number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Reference Number Label</shortDescription>
+        <value>Reference Number</value>
+    </labels>
+    
+    <!-- Error Messages -->
+    <labels>
+        <fullName>Error_Email_Required</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Email Required Error</shortDescription>
+        <value>Email address is required</value>
+    </labels>
+    <labels>
+        <fullName>Error_Invalid_Email</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Invalid Email Error</shortDescription>
+        <value>Please provide a valid email address</value>
+    </labels>
+    <labels>
+        <fullName>Error_Name_Required</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Name Required Error</shortDescription>
+        <value>Name is required</value>
+    </labels>
+    <labels>
+        <fullName>Error_Task_Required</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Task Required Error</shortDescription>
+        <value>At least one task is required</value>
+    </labels>
+    <labels>
+        <fullName>Error_Max_Tasks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Max Tasks Error</shortDescription>
+        <value>Maximum 20 tasks allowed per action plan</value>
+    </labels>
+    <labels>
+        <fullName>Error_Rate_Limit</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Rate Limit Error</shortDescription>
+        <value>You have reached the submission limit. Please try again later.</value>
+    </labels>
+    
+    <!-- Monitor Dashboard Labels -->
+    <labels>
+        <fullName>Action_Plan_Monitor_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Monitor Dashboard Title</shortDescription>
+        <value>Action Plan Monitor Dashboard</value>
+    </labels>
+    <labels>
+        <fullName>Refresh</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Refresh Button</shortDescription>
+        <value>Refresh</value>
+    </labels>
+    <labels>
+        <fullName>Process_Pending</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Process Pending Button</shortDescription>
+        <value>Process Pending Plans</value>
+    </labels>
+    <labels>
+        <fullName>Retry_Failed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Retry Failed Button</shortDescription>
+        <value>Retry Failed Plans</value>
+    </labels>
+    <labels>
+        <fullName>Total_Submissions</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Total Submissions Label</shortDescription>
+        <value>Total Submissions</value>
+    </labels>
+    <labels>
+        <fullName>Sync_Rate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Sync Rate Label</shortDescription>
+        <value>Sync Success Rate</value>
+    </labels>
+    <labels>
+        <fullName>Average_Processing_Time</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Average Processing Time Label</shortDescription>
+        <value>Avg. Processing Time</value>
+    </labels>
+    
+    <!-- Status Labels -->
+    <labels>
+        <fullName>Status_Pending</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pending Status</shortDescription>
+        <value>Pending</value>
+    </labels>
+    <labels>
+        <fullName>Status_Processing</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Processing Status</shortDescription>
+        <value>Processing</value>
+    </labels>
+    <labels>
+        <fullName>Status_Synced</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Synced Status</shortDescription>
+        <value>Synced</value>
+    </labels>
+    <labels>
+        <fullName>Status_Failed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Failed Status</shortDescription>
+        <value>Failed</value>
+    </labels>
+    
+    <!-- Help Text -->
+    <labels>
+        <fullName>Help_Email</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Email Help Text</shortDescription>
+        <value>We'll use this email to send you updates about your action plan</value>
+    </labels>
+    <labels>
+        <fullName>Help_Tasks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Tasks Help Text</shortDescription>
+        <value>Add tasks that need to be completed. You can add up to 20 tasks per action plan.</value>
+    </labels>
+    <labels>
+        <fullName>Help_Reference_Number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Reference Number Help</shortDescription>
+        <value>Use this reference number to track the status of your action plan</value>
+    </labels>
+</CustomLabels>
